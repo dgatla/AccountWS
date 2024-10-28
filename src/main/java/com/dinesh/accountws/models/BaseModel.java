@@ -7,18 +7,19 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
 @MappedSuperclass
 public class BaseModel {
-    @Column(updatable = false)
-    private Timestamp createdAt;
-    @Column(insertable = false)
-    private Timestamp updatedAt;
-    @Column(updatable = false)
+//    @Column(updatable = false)
+    private LocalDateTime createdAt;
+//    @Column(insertable = false)
+    private LocalDateTime updatedAt;
+//    @Column(updatable = false)
     private String createdBy;
-    @Column(insertable = false)
+//    @Column(insertable = false)
     private String updatedBy;
 }
