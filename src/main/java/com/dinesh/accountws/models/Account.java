@@ -17,6 +17,8 @@ public class Account extends BaseModel {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private long accountId;
 
+    private long accountNumber;
+
     private long customerId;
     private String accountType;
     private String branchAddress;
