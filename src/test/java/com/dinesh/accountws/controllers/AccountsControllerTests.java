@@ -18,7 +18,7 @@ public class AccountsControllerTests {
 
     @Test
     public void testHelloWorld() throws Exception {
-        this.mockMvc.perform(get("/helloWorld"))
+        this.mockMvc.perform(get("/api/helloWorld"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("<h1> Hello World </h1>"));
     }
