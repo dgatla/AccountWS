@@ -1,6 +1,7 @@
 package com.dinesh.accountws.service.Impl;
 
 import com.dinesh.accountws.exception.CustomerAlreadyExistsException;
+import com.dinesh.accountws.exception.CustomerNotFoundException;
 import com.dinesh.accountws.mapper.CustomerMapper;
 import com.dinesh.accountws.models.Account;
 import com.dinesh.accountws.models.Customer;
@@ -9,9 +10,6 @@ import com.dinesh.accountws.DTO.CustomerDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.dinesh.accountws.repository.*;
-
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -33,6 +31,15 @@ public class AccountsServiceImpl implements IAccountsService {
         Customer savedCustomer = customerRepository.save(customer);
         Account account = createNewAccount(savedCustomer);
         accountsRepository.save(account);
+    }
+
+    @Override
+    public CustomerDTO getAccountDetails(String mobileNumber) {
+        Optional<Customer> optionalCustomer = customerRepository.findByMobileNumber(mobileNumber);
+        if (optionalCustomer.isEmpty()) {
+            throw new CustomerNotFoundException("Customer not found with mobile number: " + mobileNumber);
+        }
+        return CustomerMapper.mapToCustomerDTO(optionalCustomer.get(), new CustomerDTO());
     }
 
     private Account createNewAccount(Customer customer) {
