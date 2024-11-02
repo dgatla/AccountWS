@@ -2,6 +2,7 @@ package com.dinesh.accountws.controllers;
 
 import com.dinesh.accountws.DTO.CustomerDTO;
 import com.dinesh.accountws.DTO.ResponseDTO;
+import com.dinesh.accountws.models.Customer;
 import com.dinesh.accountws.service.IAccountsService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class AccountsController {
-
     private IAccountsService iAccountsService;
 
     @GetMapping("/helloWorld")
@@ -24,6 +24,12 @@ public class AccountsController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO customerDTO) {
         iAccountsService.createAccount(customerDTO);
-        return ResponseEntity.ok(new ResponseDTO("201", "Account created successfully"));
+        return ResponseEntity.status(201).body(new ResponseDTO("201", "Account created successfully"));
+    }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<CustomerDTO> getAccountDetails(@RequestParam String mobileNumber){
+        CustomerDTO customerDTO = iAccountsService.getAccountDetails(mobileNumber);
+        return ResponseEntity.status(200).body(customerDTO);
     }
 }
