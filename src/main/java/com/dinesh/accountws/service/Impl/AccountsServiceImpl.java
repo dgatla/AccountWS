@@ -1,7 +1,9 @@
 package com.dinesh.accountws.service.Impl;
 
+import com.dinesh.accountws.DTO.AccountsDTO;
 import com.dinesh.accountws.exception.CustomerAlreadyExistsException;
-import com.dinesh.accountws.exception.CustomerNotFoundException;
+import com.dinesh.accountws.exception.ResourceNotFoundException;
+import com.dinesh.accountws.mapper.AccountsMapper;
 import com.dinesh.accountws.mapper.CustomerMapper;
 import com.dinesh.accountws.models.Account;
 import com.dinesh.accountws.models.Customer;
@@ -35,11 +37,13 @@ public class AccountsServiceImpl implements IAccountsService {
 
     @Override
     public CustomerDTO getAccountDetails(String mobileNumber) {
-        Optional<Customer> optionalCustomer = customerRepository.findByMobileNumber(mobileNumber);
-        if (optionalCustomer.isEmpty()) {
-            throw new CustomerNotFoundException("Customer not found with mobile number: " + mobileNumber);
-        }
-        return CustomerMapper.mapToCustomerDTO(optionalCustomer.get(), new CustomerDTO());
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(() ->
+            new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber));
+        Account account = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(() ->
+                new ResourceNotFoundException("Account", "Customer name", customer.getName()));
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer, new CustomerDTO());
+        customerDTO.setAccountsDTO(AccountsMapper.mapToAccountsDTO(account, new AccountsDTO()));
+        return customerDTO;
     }
 
     private Account createNewAccount(Customer customer) {
